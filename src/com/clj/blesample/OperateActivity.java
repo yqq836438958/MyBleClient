@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -456,7 +457,7 @@ public class OperateActivity extends Activity implements View.OnClickListener {
     private void startWrite(String serviceUUID, final String characterUUID, String writeData) {
         Log.i(TAG, "startWrite");
         if (true) {
-            // BleTest.sendDat(bleManager, serviceUUID, characterUUID);
+            startActivity(new Intent(this, TestBeiJingTongActvity.class));
             return;
         }
         boolean suc = bleManager.writeDevice(

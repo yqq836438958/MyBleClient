@@ -11,42 +11,74 @@
         android:text="result" />
 
     <Button
+        android:id="@+id/auth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tv_result"
+        android:layout_marginTop="10dp"
+        android:text="认证" />
+
+    <Button
         android:id="@+id/query"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/tv_result"
+        android:layout_marginTop="10dp"
         android:text="查询余额" />
 
     <Button
         android:id="@+id/query2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/query"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tv_result"
+        android:layout_marginTop="100dp"
         android:text="查询卡号" />
 
     <Button
         android:id="@+id/devInf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/query2"
-        android:layout_centerHorizontal="true"
-        android:text="蓝牙设备信息" />
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/tv_result"
+        android:layout_marginTop="100dp"
+        android:text="设备信息" />
 
     <Button
         android:id="@+id/poweron"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/devInf"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/query2"
+        android:layout_marginTop="10dp"
         android:text="上电" />
 
     <Button
         android:id="@+id/poweroff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/poweron"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/devInf"
+        android:layout_marginTop="10dp"
         android:text="下电" />
+
+    <RelativeLayout
+        android:id="@+id/loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B3000000"
+        android:clickable="true" >
+
+        <!-- style="@style/WalletProgressBarTheme" -->
+
+        <ProgressBar
+            style="@style/Widget.AppCompat.Base.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminateDuration="700" />
+    </RelativeLayout>
 
 </RelativeLayout>

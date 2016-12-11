@@ -19,20 +19,29 @@ public class APDU {
         return ByteUtil.toByteArray("00B0840000");
     }
 
+    public static byte[] getCardMoneyArea() {
+        return ByteUtil.toByteArray("00A40000021001");
+    }
+
     public static byte[] getCardAmount() {
         return ByteUtil.toByteArray("805C000204");
     }
 
-    public static int parseMoney(String money) {
+    public static byte[] selectAid() {
+        return ByteUtil.toByteArray("00A4040008915600001401000100");
+    }
+
+    public static float parseMoney(String money) {
         if (TextUtils.isEmpty(money) || !money.endsWith("9000")) {
-            return -1;
+            return -1f;
         }
         byte[] tmp = ByteUtil.toByteArray(money);
         int len = tmp.length;
-        byte[] bResult = new byte[len - 4];
-        System.arraycopy(tmp, 0, bResult, 0, len - 4);
+        byte[] bResult = new byte[len - 2];
+        System.arraycopy(tmp, 0, bResult, 0, len - 2);
         int iMoney = toInt(bResult, 0, 4);
-        return iMoney;
+
+        return iMoney / 100.00f;
     }
 
     public static String parseCardNum(String result) {

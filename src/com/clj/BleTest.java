@@ -22,7 +22,10 @@ import BmacBp.BeijingCard.AuthResp;
 import BmacBp.BeijingCard.BaseReq;
 import BmacBp.BeijingCard.DevInfoReq;
 import BmacBp.BeijingCard.DevInfoResp;
+import BmacBp.BeijingCard.DevPowerReq;
+import BmacBp.BeijingCard.DevPowerResp;
 import BmacBp.BeijingCard.EmDataType;
+import BmacBp.BeijingCard.EmDevPower;
 import BmacBp.BeijingCard.IccReq;
 import BmacBp.BeijingCard.IccResp;
 
@@ -31,9 +34,11 @@ public class BleTest {
     public static BleOutBuffer mIccSendBuffers = null;
     public static BleOutBuffer mDevInfoSendBuffers = null;
     public static BleOutBuffer mPowerSendBuffers = null;
+    // private static BleOutBuffer m
     public static int mAPduSize = 0;
     public static int mDevInfSize = 0;
     public static int mAuthSize = 0;
+    public static int mPowerSize = 0;
     public static int mIndex = 0;
     public static BleBufferReader mReader = null;
 
@@ -55,13 +60,13 @@ public class BleTest {
         public void onSendFail(int ret);
     }
 
-    public static byte[] sDefaultApdus = new byte[] {
+    private static byte[] sDefaultApdus = new byte[] {
             (byte) 0x80, (byte) 0x50, (byte) 0x0c, (byte) 0x00, (byte) 0x08, (byte) 0x26,
             (byte) 0x36, (byte) 0x70, (byte) 0x18, (byte) 0x62, (byte) 0x6c, (byte) 0xa4,
             (byte) 0x3d, (byte) 0x00
     };
 
-    public static void genAuthData() {
+    private static void genAuthData() {
         AuthReq.Builder builder = AuthReq.newBuilder();
         BaseReq.Builder base = BaseReq.newBuilder();
         builder.setBaseReq(base);
@@ -71,7 +76,7 @@ public class BleTest {
         mAuthSize = mAuthSendBuffers.getDataList().size();
     }
 
-    public static void genDevInfRet() {
+    private static void genDevInfRet() {
         DevInfoReq.Builder builder = DevInfoReq.newBuilder();
         BaseReq.Builder base = BaseReq.newBuilder();
         builder.setBaseReq(base);
@@ -80,7 +85,17 @@ public class BleTest {
         mDevInfSize = mDevInfoSendBuffers.getDataList().size();
     }
 
-    public static void genIccApdus(byte[] src) {
+    private static void genPowerCommand(int powOn) {
+        DevPowerReq.Builder builder = DevPowerReq.newBuilder();
+        BaseReq.Builder base = BaseReq.newBuilder();
+        builder.setBaseReq(base);
+        builder.setEmDevPower((powOn == 1) ? EmDevPower.EDP_power_on : EmDevPower.EDP_power_off);
+        byte[] result = builder.build().toByteArray();
+        mPowerSendBuffers = new BleOutBuffer((byte) 0xA2, result);
+        mPowerSize = mPowerSendBuffers.getDataList().size();
+    }
+
+    private static void genIccApdus(byte[] src) {
 
         IccReq.Builder req = IccReq.newBuilder();
         BaseReq.Builder base = BaseReq.newBuilder();
@@ -91,7 +106,7 @@ public class BleTest {
         mAPduSize = mIccSendBuffers.getDataList().size();
     }
 
-    public static void onRecv(byte[] _data, IRecvCallback callback) {
+    private static void onRecv(byte[] _data, IRecvCallback callback) {
         int ret = mReader.readBleBuffer(_data);
         if (ret != ErrCode.ERR_HANDLE_OK) {
             return;
@@ -112,12 +127,15 @@ public class BleTest {
             case (byte) 0xA1:
                 onParseIccRsp(tmp, callback);
                 break;
+            case (byte) 0xA2:
+                onParseDevPowRsp(tmp, callback);
+                break;
             default:
                 break;
         }
     }
 
-    public static void onParseIccRsp(byte[] tmp, IRecvCallback callback) {
+    private static void onParseIccRsp(byte[] tmp, IRecvCallback callback) {
         IccResp resp;
         try {
             resp = IccResp.parseFrom(tmp);
@@ -134,7 +152,7 @@ public class BleTest {
         }
     }
 
-    public static void onParseAuthRsp(byte[] tmp, IRecvCallback callback) {
+    private static void onParseAuthRsp(byte[] tmp, IRecvCallback callback) {
         AuthResp resp;
         try {
             resp = AuthResp.parseFrom(tmp);
@@ -163,7 +181,24 @@ public class BleTest {
         }
     }
 
-    public static void onParseDevInfRsp(byte[] tmp, IRecvCallback callback) {
+    private static void onParseDevPowRsp(byte[] tmp, IRecvCallback callback) {
+        DevPowerResp resp;
+        try {
+            resp = DevPowerResp.parseFrom(tmp);
+            int iRet = resp.getBaseResp().getEmRetCode();
+            Log.e("yqq", "recv iRet:" + iRet);
+            if (callback != null) {
+                callback.onRecvSuc(iRet + "");
+            }
+        } catch (InvalidProtocolBufferException e) {
+            if (callback != null) {
+                callback.onRecvFail(-1);
+            }
+        }
+
+    }
+
+    private static void onParseDevInfRsp(byte[] tmp, IRecvCallback callback) {
         try {
             DevInfoResp resp = DevInfoResp.parseFrom(tmp);
             int iRet = resp.getBaseResp().getEmRetCode();
@@ -193,7 +228,7 @@ public class BleTest {
         }
     }
 
-    public static void sendAuth(BleManager bleManager, String serviceUUID,
+    private static void sendAuth(BleManager bleManager, String serviceUUID,
             final String characterUUID, BleCharacterCallback callback) {
         int index = 0;
         byte[] tmp = null;
@@ -213,7 +248,7 @@ public class BleTest {
         }
     }
 
-    public static void sendDevInfo(BleManager bleManager, String serviceUUID,
+    private static void sendDevInfo(BleManager bleManager, String serviceUUID,
             final String characterUUID, BleCharacterCallback callback) {
         int index = 0;
         byte[] tmp = null;
@@ -233,7 +268,7 @@ public class BleTest {
         }
     }
 
-    public static void sendIccs(BleManager bleManager, String serviceUUID,
+    private static void sendIccs(BleManager bleManager, String serviceUUID,
             final String characterUUID, BleCharacterCallback callback) {
         int index = 0;
         byte[] tmp = null;
@@ -257,6 +292,26 @@ public class BleTest {
         }
     }
 
+    private static void sendDevPower(BleManager bleManager, String serviceUUID,
+            final String characterUUID, BleCharacterCallback callback) {
+        int index = 0;
+        byte[] tmp = null;
+        for (index = 0; index < mPowerSize; index++) {
+            tmp = mPowerSendBuffers.getDataList().get(index).get();
+            bleManager.writeDevice(serviceUUID, characterUUID, tmp, callback);
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void sendDat(final int type, final byte[] val, final ISendCallback sendCallback,
             final IRecvCallback recvCallback) {
         final BleManager bleManager = BleManager.getInstance();
@@ -266,7 +321,7 @@ public class BleTest {
             @Override
             public void run() {
                 bleManager.indicateDevice("0000b001-0000-1000-8000-00805f9b34fb",
-                        "0000b155-0000-1000-8000-00805f9b34fb",
+                        "0000b003-0000-1000-8000-00805f9b34fb",
                         new BleCharacterCallback() {
 
                     @Override
@@ -318,6 +373,9 @@ public class BleTest {
                                 "0000b002-0000-1000-8000-00805f9b34fb", characterCallback);
                         break;
                     case TYPE_POWER:
+                        genPowerCommand((int) val[0]);
+                        sendDevPower(bleManager, "0000b001-0000-1000-8000-00805f9b34fb",
+                                "0000b002-0000-1000-8000-00805f9b34fb", characterCallback);
                         break;
                     default:
                         break;
