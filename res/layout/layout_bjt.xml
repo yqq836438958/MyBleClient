@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/tv_result"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:text="查询卡号" />
 
     <Button
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/tv_result"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="80dp"
         android:text="设备信息" />
 
     <Button
@@ -63,6 +63,15 @@
         android:layout_below="@id/devInf"
         android:layout_marginTop="10dp"
         android:text="下电" />
+
+    <Button
+        android:id="@+id/disconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/poweroff"
+        android:layout_marginTop="10dp"
+        android:text="退出" />
 
     <RelativeLayout
         android:id="@+id/loading"

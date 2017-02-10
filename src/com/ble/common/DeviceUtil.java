@@ -16,15 +16,18 @@ public class DeviceUtil {
     }
 
     public static int getProtoVer() {
-        return 0x020601;
+        return 0x010002;
     }
 
     public static String getFactoryId() {
+        // 改成一卡通给我们分配的id
         return android.os.Build.BRAND;
     }
 
-    public static String getDeviceType() {
-        return android.os.Build.MODEL;
+    public static byte[] getDeviceType() {
+        return new byte[] {
+                0x01
+        };
     }
 
     public static String getDeviceName() {

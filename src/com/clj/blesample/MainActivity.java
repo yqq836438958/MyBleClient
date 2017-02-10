@@ -24,12 +24,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_operate:
-                TestData.genObject();
-//                byte[] data1 = TestData.getData(0);
-//                byte[] data2 = TestData.getData(1);
-//                TestData.genInputData(data1);
-//                TestData.genInputData(data2);
-//                TestData.handleInputData();
+                // TestData.genObject();
+                // byte[] data1 = TestData.getData(0);
+                // byte[] data2 = TestData.getData(1);
+                // TestData.genInputData(data1);
+                // TestData.genInputData(data2);
+                // TestData.handleInputData();
                 startActivity(new Intent(MainActivity.this, OperateActivity.class));
                 break;
 

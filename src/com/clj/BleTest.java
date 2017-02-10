@@ -158,7 +158,7 @@ public class BleTest {
             resp = AuthResp.parseFrom(tmp);
             int iRet = resp.getBaseResp().getEmRetCode();
             int protoVer = resp.getProtoVersion();
-            String macAddr = resp.getMacAddress().toString();
+            byte[] macAddr = resp.getMacAddress().toByteArray();
             String facId = resp.getFacId().toStringUtf8();
             String devType = resp.getDeviceType().toStringUtf8();
             StringBuilder builder = new StringBuilder();
@@ -167,9 +167,9 @@ public class BleTest {
                     .append(facId).append(",devType:").append(devType)
                     .toString();
             Log.e("yqq", "recv->" + resp.getProtoVersion());
-            Log.e("yqq", "recv->" + resp.getMacAddress());
-            Log.e("yqq", "recv->" + resp.getFacId().toStringUtf8());
-            Log.e("yqq", "recv->" + resp.getDeviceType().toStringUtf8());
+            Log.e("yqq", "recv->" + ByteUtil.toHexString(macAddr));
+            Log.e("yqq", "recv->" + ByteUtil.toHexString(resp.getFacId().toByteArray()));
+            Log.e("yqq", "recv->" + ByteUtil.toHexString(resp.getDeviceType().toByteArray()));
             if (callback != null) {
                 callback.onRecvSuc(result);
             }

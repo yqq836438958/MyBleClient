@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.clj.APDU;
 import com.clj.BleTest;
 import com.clj.BleTest.IRecvCallback;
 import com.clj.BleTest.ISendCallback;
+import com.clj.fastble.BleManager;
 
 public class TestBeiJingTongActvity extends Activity implements IUIUpdate {
     private Button mQueryMoney = null;
@@ -21,6 +23,7 @@ public class TestBeiJingTongActvity extends Activity implements IUIUpdate {
     private Button mPowerOn = null;
     private Button mPowerOff = null;
     private Button mAuth = null;
+    private Button mDisconnect = null;
     private TextView mResult = null;
     private ViewGroup mLoadingView = null;
 
@@ -36,8 +39,18 @@ public class TestBeiJingTongActvity extends Activity implements IUIUpdate {
         mPowerOn = (Button) findViewById(R.id.poweron);
         mPowerOff = (Button) findViewById(R.id.poweroff);
         mAuth = (Button) findViewById(R.id.auth);
+        mDisconnect = (Button) findViewById(R.id.disconnect);
         mLoadingView = (ViewGroup) findViewById(R.id.loading);
         mLoadingView.setVisibility(View.GONE);
+        mDisconnect.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                BleManager bleManager = BleManager.getInstance();
+                bleManager.closeBluetoothGatt();
+                finish();
+            }
+        });
         mQueryMoney.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -188,5 +201,24 @@ public class TestBeiJingTongActvity extends Activity implements IUIUpdate {
     @Override
     public void onShowResult(String ret) {
         showResult(ret);
+
+    }
+
+    private long mLastexitTime = 0;
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - mLastexitTime > 2000) {
+            Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            mLastexitTime = System.currentTimeMillis();
+        } else {
+            finish();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        mLastexitTime = 0;
+        super.onDestroy();
     }
 }

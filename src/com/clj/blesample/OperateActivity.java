@@ -246,8 +246,12 @@ public class OperateActivity extends Activity implements View.OnClickListener {
      * 显示连接状态
      */
     private void showConnectState(String deviceName, BluetoothGatt gatt) {
-        bleManager.getBluetoothState();
-
+        // if (gatt != null) {
+        // bleManager.getBluetoothState();
+        // startActivity(new Intent(this, TestBeiJingTongActvity.class));
+        // finish();
+        // return;
+        // }
         layout_item_connect.setVisibility(View.GONE);
         layout_item_state.setVisibility(View.VISIBLE);
         txt_device_name.setText(deviceName);
@@ -294,31 +298,18 @@ public class OperateActivity extends Activity implements View.OnClickListener {
                             break;
 
                         case BluetoothGattCharacteristic.PROPERTY_WRITE:
-                            btn_properties.setText(String.valueOf("write"));
+                            btn_properties.setText(String.valueOf("点我"));
                             btn_properties.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    if (btn_properties.getText().toString().equals("write")) {
-                                        EditDialog dialog = new EditDialog(OperateActivity.this);
-                                        dialog.setOnDialogClickListener(
-                                                new EditDialog.OnDialogClickListener() {
-                                            @Override
-                                            public void onEditOkClick(String writeData) {
-                                                startWrite(service.getUuid().toString(),
-                                                        characteristic.getUuid().toString(),
-                                                        writeData);
-                                            }
-
-                                            @Override
-                                            public void onEditErrorClick() {
-                                                Log.e(TAG, "write error");
-                                            }
-                                        });
-                                        dialog.show();
+                                    if (btn_properties.getText().toString().equals("点我")) {
+                                        startWrite(service.getUuid().toString(),
+                                                characteristic.getUuid().toString(),
+                                                "");
                                     } else if (btn_properties.getText().toString()
                                             .equals("stopListen")) {
                                         stopListen(characteristic.getUuid().toString());
-                                        btn_properties.setText(String.valueOf("write"));
+                                        btn_properties.setText(String.valueOf("点我"));
                                     }
                                 }
                             });
